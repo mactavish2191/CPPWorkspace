@@ -1,0 +1,1 @@
+g++ -std=c++2a bigint.cpp -o bigint -lgmpxx -lgmp
