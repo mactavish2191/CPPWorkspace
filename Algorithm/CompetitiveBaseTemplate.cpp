@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <bitset>
 #include <string>
-#include <sstream> 
+#include <sstream>
 #include <vector>
 #include <set>
 #include <map>
@@ -35,8 +35,8 @@ using namespace std;
 //print a container
 template<typename T>
 void printContainer(T &t) {
-	for(const auto &e : t) std::cout << e << " ";
-	std::cout << "\n";
+    for (const auto &e : t) std::cout << e << " ";
+    std::cout << "\n";
 }
 
 //print a object
@@ -60,7 +60,7 @@ auto compute_Binomail_Coefficient() -> void {
         comb[i][0] = comb[i][i] = 1;
 
         for (ULL j = 1; j < i; j++) {
-            comb[i][j] = comb[i - 1][j] + comb[i - 1][j - 1]; //n+1Cr = nCr + nCr-1 
+            comb[i][j] = comb[i - 1][j] + comb[i - 1][j - 1]; //n+1Cr = nCr + nCr-1
             if (comb[i][j] >= MOD)
                 comb[i][j] -= MOD;
         }
@@ -71,7 +71,7 @@ auto compute_Binomail_Coefficient() -> void {
 /*auto power(ULL a, ULL b)-> ULL {
     ULL result = 1;
     while (b > 0) {
-        if (b & 1) //equivalent to b % 2 == 1 
+        if (b & 1) //equivalent to b % 2 == 1
             result = (result * a) % MOD;
         a = (a * a) % MOD;
         b >>= 1; // equivalent to b /= 2
@@ -80,13 +80,13 @@ auto compute_Binomail_Coefficient() -> void {
 }*/
 
 int main()
-{   
+{
     fastio;
     FOR(i, 10) {
         println(i);
     }
 
-    REP(i, 10, 20){
+    REP(i, 10, 20) {
         println(i);
     }
 
