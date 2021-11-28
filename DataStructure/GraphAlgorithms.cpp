@@ -6,14 +6,107 @@
 #include <iterator>
 #include <stack>
 #include <limits>
+#include <algorithm>
 #include <set>
 
 
 using namespace std;
-constexpr int INF = numeric_limits<int>::max();
+constexpr int INF = 1E9 + 7;
 const string ln = "\n";
 using pii = pair<int, int>;
 using tiii = tuple<int, int, int>;
+
+class FloydWarshall { //Using Adjacency Matrix
+private:
+	int m_V = 0; // Vertices
+	int m_E = 0; // Edges
+	vector<vector<int>> Graph; // 2D matrix to hold the edges and vertices of a Graph
+
+public:
+	FloydWarshall(int V = 0) : m_V(V) {
+
+		Graph.resize(m_V, vector<int>(m_V));
+
+		//Initialize with INF for all the Edge weights
+		for (int i = 0; i < m_V; ++i) {
+			for (int j = 0; j < m_V; ++j) {
+				Graph[i][j] = INF;
+				if (i == j)
+					Graph[i][j] = 0;
+			}
+		}
+	}
+
+	void PrintMatrix() {
+		cout << "Printing 2D Matrix...\n";
+		for (int i = 0; i < m_V; ++i) {
+			for (int j = 0; j < m_V; ++j) {
+				cout << Graph[i][j] << ((Graph[i][j] == INF) ? "\t" : " \t\t");
+			}
+			cout << ln;
+		}
+		cout << ln;
+	}
+
+	void AddDiEdge(int a, int b, int weight = 0) { //directed edge graph with optional weight
+		if ((a > m_V || b > m_V) || (a < 0 || b < 0)) {
+			cout << "The vertex does not exits \nPlease enter new value \n";
+		}
+		else { // Starting with Index 1 as Graph Vertex counting
+			Graph[a - 1][b - 1] = weight;
+			m_E++;
+		}
+
+	}
+
+	void FloydWarshallSolver() {
+		vector<vector<int>> dpGraph(m_V, vector<int>(m_V));
+		vector<vector<int>> nextGraph(m_V, vector<int>(m_V));
+
+		//Initilaize the Main matrix and the next matrix
+		for (int i = 0; i < m_V; ++i) {
+			for (int j = 0; j < m_V; ++j) {
+				if (Graph[i][j] != INF)
+					nextGraph[i][j] = j;
+				dpGraph[i][j] = Graph[i][j];
+			}
+		}
+
+		for (int k = 0; k < m_V; ++k) {
+			for (int i = 0; i < m_V; ++i) {
+				for (int j = 0; j < m_V; ++j) {
+					dpGraph[i][j] = min(dpGraph[i][j], dpGraph[i][k] + dpGraph[k][j]);
+					nextGraph[i][j] = nextGraph[i][k];
+				}
+			}
+		}
+
+		//Check for negative cycles by spreading the value -INF
+		// for (int k = 0; k < m_V; ++k) {
+		// 	for (int i = 0; i < m_V; ++i) {
+		// 		for (int j = 0; j < m_V; ++j) {
+		// 			if (dpGraph[i][k] + dpGraph[k][j] < dpGraph[i][j]) {
+		// 				dpGraph[i][j] = -(INF - 1);
+		// 				nextGraph[i][j] = -1;
+		// 			}
+
+		// 		}
+		// 	}
+		// }
+
+		//Print value of DP Matrix
+		cout << "Printing 2D Matrix...\n";
+		for (int i = 0; i < m_V; ++i) {
+			for (int j = 0; j < m_V; ++j) {
+				cout << dpGraph[i][j] << ((dpGraph[i][j] == INF) ? "\t" : " \t\t");
+			}
+			cout << ln;
+		}
+		cout << ln;
+
+	}
+
+};
 
 //Adjacency list definition
 class GraphList {
@@ -61,8 +154,7 @@ private:
 
 public:
 
-	GraphList(int V = 0) : m_V(V)
-	{
+	GraphList(int V = 0) : m_V(V) {
 		if (V == 0) {
 			cout << "Graph cannot be created. \n";
 			exit(0);
@@ -662,7 +754,7 @@ int main() {
 		{6, 0, 0}
 	};
 
-	//Undirected weighted graph Example
+	//Undirected weighted graph
 	vector<tiii> V8 = {
 		{1, 2, 10},
 		{1, 3, 1},
@@ -680,6 +772,17 @@ int main() {
 		{7, 8, 12}
 	};
 
+	//directed weighted graph for FW algorithm
+	vector<tiii> V9 = {
+		{1, 2, 3},
+		{1, 4, 7},
+		{2, 1, 8},
+		{2, 3, 2},
+		{3, 1, 5},
+		{3, 4, 1},
+		{4, 1, 2}
+	};
+
 
 	//Working with Unweighted Shortest Path
 	//GraphList G(7);
@@ -690,14 +793,21 @@ int main() {
 	//G.UnweightedShortestPath(3, 7);
 
 
-	GraphList G(7);
-	for (const auto& i : V5) {
+	// GraphList G(7);
+	// for (const auto& i : V5) {
+	// 	auto &[from, to, weight] = i;
+	// 	G.AddDiEdge(from, to, weight);
+	// }
+	// G.PrintDiGraph();
+	// G.BellmanFordShortestPath(1, 7);
+
+	FloydWarshall G(4);
+	for (const auto& i : V9) {
 		auto &[from, to, weight] = i;
 		G.AddDiEdge(from, to, weight);
 	}
-	G.PrintDiGraph();
-	G.BellmanFordShortestPath(1, 7);
-
+	G.PrintMatrix();
+	G.FloydWarshallSolver();
 
 	return 0;
 }
