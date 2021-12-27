@@ -38,7 +38,7 @@ public:
 	}
 
 	void PrintMatrix() {
-		cout << "Printing 2D Matrix...\n";
+		cout << "Initial Matrix:\n";
 		for (int i = 0; i < m_V; ++i) {
 			for (int j = 0; j < m_V; ++j) {
 				cout << Graph[i][j] << ((Graph[i][j] == INF) ? "\t" : " \t\t");
@@ -61,41 +61,30 @@ public:
 
 	void FloydWarshallSolver() {
 		vector<vector<int>> dpGraph(m_V, vector<int>(m_V));
-		vector<vector<int>> nextGraph(m_V, vector<int>(m_V));
 
-		//Initilaize the Main matrix and the next matrix
-		for (int i = 0; i < m_V; ++i) {
-			for (int j = 0; j < m_V; ++j) {
-				if (Graph[i][j] != INF)
-					nextGraph[i][j] = j;
+		//Initilaize the Solver matrix
+		for (int i = 0; i < m_V; ++i) 
+			for (int j = 0; j < m_V; ++j)
 				dpGraph[i][j] = Graph[i][j];
-			}
-		}
 
-		for (int k = 0; k < m_V; ++k) {
-			for (int i = 0; i < m_V; ++i) {
-				for (int j = 0; j < m_V; ++j) {
+
+		for (int k = 0; k < m_V; ++k) 
+			for (int i = 0; i < m_V; ++i) 
+				for (int j = 0; j < m_V; ++j) 
 					dpGraph[i][j] = min(dpGraph[i][j], dpGraph[i][k] + dpGraph[k][j]);
-					nextGraph[i][j] = nextGraph[i][k];
-				}
-			}
-		}
+
 
 		//Check for negative cycles by spreading the value -INF
-		// for (int k = 0; k < m_V; ++k) {
-		// 	for (int i = 0; i < m_V; ++i) {
-		// 		for (int j = 0; j < m_V; ++j) {
-		// 			if (dpGraph[i][k] + dpGraph[k][j] < dpGraph[i][j]) {
-		// 				dpGraph[i][j] = -(INF - 1);
-		// 				nextGraph[i][j] = -1;
-		// 			}
+		for (int k = 0; k < m_V; ++k) 
+			for (int i = 0; i < m_V; ++i) 
+				for (int j = 0; j < m_V; ++j) 
+					if ((dpGraph[i][k] + dpGraph[k][j]) < dpGraph[i][j]) {
+						dpGraph[i][j] = -INF;
+					}
 
-		// 		}
-		// 	}
-		// }
 
 		//Print value of DP Matrix
-		cout << "Printing 2D Matrix...\n";
+		cout << "Solved Matrix Final Path:\n";
 		for (int i = 0; i < m_V; ++i) {
 			for (int j = 0; j < m_V; ++j) {
 				cout << dpGraph[i][j] << ((dpGraph[i][j] == INF) ? "\t" : " \t\t");
@@ -104,12 +93,13 @@ public:
 		}
 		cout << ln;
 
-	}
+
+	} //end FloydWarshallSolver
 
 };
 
-//Adjacency list definition
-class GraphList {
+					
+class GraphList {	// Using Adjacency List
 private:
 	int m_V;  //vertices
 	int m_E = 0;  //edges
@@ -284,28 +274,26 @@ public:
 		cout << "DFS Traversal Loop order: ";
 
 		for (int i = 1; i < m_V + 1; i++) {
-			if (Adj.find(i) != Adj.end()) {
-				if (visited[i] == false) {
-					stack<int> S;
-					S.push(i);
+			if (visited[i] == false) {
+				stack<int> S;
+				S.push(i);
 
-					visited[i] = true;
+				visited[i] = true;
 
-					while (S.empty() != true)
-					{
-						int key = S.top(); S.pop();
-						cout << key << " ";
+				while (S.empty() != true)
+				{
+					int key = S.top(); S.pop();
+					cout << key << " ";
 
-						vector<pii>::reverse_iterator ritr;
-						for (ritr = Adj[key].rbegin(); ritr != Adj[key].rend(); ritr++) {
-							if (visited[ritr->first] == false) {
-								S.push(ritr->first);
-								visited[ritr->first] = true;
-							}
+					vector<pii>::reverse_iterator ritr;
+					for (ritr = Adj[key].rbegin(); ritr != Adj[key].rend(); ritr++) {
+						if (visited[ritr->first] == false) {
+							S.push(ritr->first);
+							visited[ritr->first] = true;
 						}
-					}// end while
-				}// end if
-			}
+					}
+				}// end while
+			}// end if
 		}//end for
 		cout << "\n";
 	}
@@ -516,7 +504,7 @@ public:
 		else if (end <= 0 && end > m_V) {
 			cout << "Please check the end vertex\n";
 		}
-		else { //INF 2147483647 INTMAX
+		else { //INF 1E9 + 7 1000'000'007
 			cout << "Running Bellman Ford Shortest Path Algorithm......\n";
 			vector<int> distance(m_V + 1, INF); //starts with index 1
 			vector<int> path(m_V + 1, INF); //starts with index 1
@@ -556,7 +544,6 @@ public:
 			PrintShortestPath(path, end);
 
 		}
-
 	}
 
 	void PrimsMST(int start) {
@@ -570,28 +557,28 @@ public:
 
 			distance[start] = 0;
 
-			//minimum priority queue associated with distance in the distance table
-			priority_queue<pii, vector<pii>, greater<pii> > pq;
-			//Entry		[vertex, distance value] // sort by distance
-			pq.push({ start, distance[start] });
+			
+			priority_queue<pii, vector<pii>, greater<pii>> pq; //Minimum priority queue 
+			
+			pq.push({ distance[start], start }); //Entry [distance, vertex] // sort by distance
 
 
 			while (pq.empty() != true) {
-				int node = pq.top().first; pq.pop();
+				auto node = pq.top(); pq.pop();
 
-				for (const auto& w : Adj[node]) { // get all the neighbour vertices
-					int new_dist = distance[node] + w.second;
+				for (const auto& w : Adj[node.second]) { // get all the neighbour vertices
+					int new_dist = distance[node.second] + w.second;
 
 					if (distance[w.first] == INF) {
 						distance[w.first] = w.second;
-						pq.push({ w.first, new_dist });
-						path[w.first] = node;
+						pq.push({ new_dist, w.first });
+						path[w.first] = node.second;
 					}
 
 					if (distance[w.first] > new_dist) {
 						distance[w.first] = w.second;
-						pq.push({ w.first, new_dist });
-						path[w.first] = node;
+						pq.push({ new_dist, w.first });
+						path[w.first] = node.second;
 
 					}
 				}
@@ -621,10 +608,6 @@ public:
 			cout << "TotalCost : " << totalCost << ln;
 
 		}
-	}
-
-	void KruskalMST() {
-
 	}
 
 };
@@ -772,7 +755,7 @@ int main() {
 		{7, 8, 12}
 	};
 
-	//directed weighted graph for FW algorithm
+	//Directed weighted graph for FW algorithm
 	vector<tiii> V9 = {
 		{1, 2, 3},
 		{1, 4, 7},
