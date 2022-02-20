@@ -407,6 +407,7 @@ public:
 
 		// Main Logic
 		cout << "Running Lazy Dijsktra Shortest Path Algorithm...\n";
+		vector<bool> visisted(m_V + 1, false);
 		vector<int> distance(m_V + 1, INF); //starts with index 1
 		vector<int> path(m_V + 1, INF);		//starts with index 1
 
