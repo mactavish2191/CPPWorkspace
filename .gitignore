@@ -13,6 +13,7 @@
 *.lo
 *.o
 *.obj
+*.elf
 
 # Precompiled Headers
 *.gch
@@ -24,6 +25,12 @@
 *.dll
 *.dll.sig
 
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
 # Fortran module files
 *.mod
 *.smod
@@ -33,8 +40,10 @@
 *.la
 *.a
 *.lib
+*.lo
 
 # Executables
 *.exe
 *.out
 *.app
+*.hex

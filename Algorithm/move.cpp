@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <string>
 
 using namespace std;
 
@@ -12,22 +13,22 @@ int main(){
 
   func(5 + 6);
 
-  // int list[] = {45, 31, 46, 67, 88, 91};
-  // int k = 66;
+   int list[] = {45, 31, 46, 67, 88, 91};
+   int k = 66;
 
-  // cout << k << "\n";
-  // for(int i=0; i<6; i++){
-  //   cout << list[i] << " ";
-  // }
-  // cout << "\n";
+   cout << k << "\n";
+   for(int i=0; i<6; i++){
+     cout << list[i] << " ";
+   }
+   cout << "\n";
 
-  // k = move(list[2]);
+   k = move(list[2]);
 
-  // cout << k << "\n";
-  // for(int i=0; i<6; i++){
-  //   cout << list[i] << " ";
-  // }
-  // cout << "\n"; 
+   cout << k << "\n";
+   for(int i=0; i<6; i++){
+     cout << list[i] << " ";
+   }
+   cout << "\n"; 
 
   return 0;
 }

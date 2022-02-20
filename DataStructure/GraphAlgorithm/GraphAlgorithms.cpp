@@ -9,22 +9,21 @@
 #include <algorithm>
 #include <set>
 
-
 using namespace std;
 constexpr int INF = 1E9 + 7;
 const string ln = "\n";
 using pii = pair<int, int>;
 using tiii = tuple<int, int, int>;
 
-class FloydWarshall { //Using Adjacency Matrix
+class FloydWarshall
+{ //Using Adjacency Matrix
 private:
-	int m_V = 0; // Vertices
-	int m_E = 0; // Edges
+	int m_V = 0;			   // Vertices
+	int m_E = 0;			   // Edges
 	vector<vector<int>> Graph; // 2D matrix to hold the edges and vertices of a Graph
 
 public:
 	FloydWarshall(int V = 0) : m_V(V) {
-
 		Graph.resize(m_V, vector<int>(m_V));
 
 		//Initialize with INF for all the Edge weights
@@ -39,8 +38,10 @@ public:
 
 	void PrintMatrix() {
 		cout << "Initial Matrix:\n";
-		for (int i = 0; i < m_V; ++i) {
-			for (int j = 0; j < m_V; ++j) {
+		for (int i = 0; i < m_V; ++i)
+		{
+			for (int j = 0; j < m_V; ++j)
+			{
 				cout << Graph[i][j] << ((Graph[i][j] == INF) ? "\t" : " \t\t");
 			}
 			cout << ln;
@@ -49,39 +50,37 @@ public:
 	}
 
 	void AddDiEdge(int a, int b, int weight = 0) { //directed edge graph with optional weight
-		if ((a > m_V || b > m_V) || (a < 0 || b < 0)) {
+		if ((a > m_V || b > m_V) || (a < 0 || b < 0))
+		{
 			cout << "The vertex does not exits \nPlease enter new value \n";
 		}
-		else { // Starting with Index 1 as Graph Vertex counting
+		else
+		{ // Starting with Index 1 as Graph Vertex counting
 			Graph[a - 1][b - 1] = weight;
 			m_E++;
 		}
-
 	}
 
 	void FloydWarshallSolver() {
 		vector<vector<int>> dpGraph(m_V, vector<int>(m_V));
 
 		//Initilaize the Solver matrix
-		for (int i = 0; i < m_V; ++i) 
+		for (int i = 0; i < m_V; ++i)
 			for (int j = 0; j < m_V; ++j)
 				dpGraph[i][j] = Graph[i][j];
 
-
-		for (int k = 0; k < m_V; ++k) 
-			for (int i = 0; i < m_V; ++i) 
-				for (int j = 0; j < m_V; ++j) 
+		for (int k = 0; k < m_V; ++k)
+			for (int i = 0; i < m_V; ++i)
+				for (int j = 0; j < m_V; ++j)
 					dpGraph[i][j] = min(dpGraph[i][j], dpGraph[i][k] + dpGraph[k][j]);
 
-
 		//Check for negative cycles by spreading the value -INF
-		for (int k = 0; k < m_V; ++k) 
-			for (int i = 0; i < m_V; ++i) 
-				for (int j = 0; j < m_V; ++j) 
+		for (int k = 0; k < m_V; ++k)
+			for (int i = 0; i < m_V; ++i)
+				for (int j = 0; j < m_V; ++j)
 					if ((dpGraph[i][k] + dpGraph[k][j]) < dpGraph[i][j]) {
 						dpGraph[i][j] = -INF;
 					}
-
 
 		//Print value of DP Matrix
 		cout << "Solved Matrix Final Path:\n";
@@ -93,38 +92,35 @@ public:
 		}
 		cout << ln;
 
-
 	} //end FloydWarshallSolver
-
 };
 
-					
-class GraphList {	// Using Adjacency List
+class GraphList { // Using Adjacency List
 private:
-	int m_V;  //vertices
-	int m_E = 0;  //edges
+	int m_V;		  //vertices
+	int m_E = 0;	  //edges
 	bool DAG = false; // to check if the graph is a Directed Graph
 
 	//0 index means null pointer in Graph structure pointing to nothing. N -> null
-	map<int, vector<pair<int, int>> > Adj; //for storing undirected and digraph
-	vector<int> indegree; // for storing indegree data
-
+	map<int, vector<pair<int, int>>> Adj; //for storing undirected and digraph
+	vector<int> indegree;				  // for storing indegree data
 
 	//DFS Utility private function
-	void DFS_PathTrack(vector<bool>& visited, int index) {
+	void DFS_PathTrack(vector<bool> &visited, int index) {
 
 		visited[index] = true;
 		if (index != 0)
 			cout << index << " ";
 
 		//Scan for all the vertices adjacent to the vertex
-		for (const auto& i : Adj[index]) {
+		for (const auto &i : Adj[index])
+		{
 			if (visited[i.first] == false)
 				DFS_PathTrack(visited, i.first);
 		}
 	}
 
-	void PrintShortestPath(const vector<int>& path, int end) {
+	void PrintShortestPath(const vector<int> &path, int end) {
 		cout << "Shortest Path :";
 		vector<int> track;
 		int i = end;
@@ -143,9 +139,9 @@ private:
 	}
 
 public:
-
 	GraphList(int V = 0) : m_V(V) {
-		if (V == 0) {
+		if (V == 0)
+		{
 			cout << "Graph cannot be created. \n";
 			exit(0);
 		}
@@ -158,20 +154,24 @@ public:
 	}
 
 	void AddEdge(int a, int b, int weight = 0) { //undirected edge graph with optional weight
-		if ((a > m_V || b > m_V) || (a < 0 || b < 0)) {
+		if ((a > m_V || b > m_V) || (a < 0 || b < 0))
+		{
 			cout << "The vertex does not exits \nPlease enter new value \n";
 		}
-		else if (a == 0) {
-			Adj[b].push_back({ 0, 0 });
+		else if (a == 0)
+		{
+			Adj[b].push_back({0, 0});
 			m_E++;
 		}
-		else if (b == 0) {
-			Adj[a].push_back({ 0, 0 });
+		else if (b == 0)
+		{
+			Adj[a].push_back({0, 0});
 			m_E++;
 		}
-		else {
-			Adj[a].push_back({ b, weight });
-			Adj[b].push_back({ a, weight });
+		else
+		{
+			Adj[a].push_back({b, weight});
+			Adj[b].push_back({a, weight});
 			m_E++;
 		}
 	}
@@ -181,17 +181,17 @@ public:
 			cout << "The vertex does not exits \nPlease enter new value \n";
 		}
 		else if (a == 0) {
-			Adj[b].push_back({ 0, 0 });
+			Adj[b].push_back({0, 0});
 			m_E++;
 			DAG = true;
 		}
 		else if (b == 0) {
-			Adj[a].push_back({ 0, 0 });
+			Adj[a].push_back({0, 0});
 			m_E++;
 			DAG = true;
-		}
-		else {
-			Adj[a].push_back({ b, weight });
+		} 
+		else{
+			Adj[a].push_back({b, weight});
 			m_E++;
 			indegree[b]++;
 			DAG = true;
@@ -203,9 +203,9 @@ public:
 			cout << "No graph vertices are available\n";
 		}
 		else {
-			for (const auto& x : Adj) {
+			for (const auto &x : Adj) {
 				cout << x.first;
-				for (const auto& y : x.second) {
+				for (const auto &y : x.second) {
 					cout << " -> " << y.first << "{" << y.second << "}";
 				}
 				cout << "\n";
@@ -218,9 +218,9 @@ public:
 			cout << "No graph vertices are available\n";
 		}
 		else {
-			for (const auto& x : Adj) {
+			for (const auto &x : Adj) {
 				cout << x.first;
-				for (const auto& y : x.second) {
+				for (const auto &y : x.second) {
 					cout << " -> " << y.first << "{" << y.second << "}";
 				}
 				cout << "\n";
@@ -240,20 +240,21 @@ public:
 					visited[i] = true;
 
 					while (Q.empty() != true) {
-						int key = Q.front(); Q.pop();
+						int key = Q.front();
+						Q.pop();
 						cout << key << " ";
 
-						for (const auto& node : Adj[key]) {
+						for (const auto &node : Adj[key]) {
 							if (visited[node.first] == false) {
 								Q.push(node.first);
 								visited[node.first] = true;
 							}
 						}
 
-					}//end while
+					} //end while
 				}
 			}
-		}//end for loop for all vertices
+		} //end for loop for all vertices
 
 		cout << "\n";
 	}
@@ -280,9 +281,9 @@ public:
 
 				visited[i] = true;
 
-				while (S.empty() != true)
-				{
-					int key = S.top(); S.pop();
+				while (S.empty() != true) {
+					int key = S.top();
+					S.pop();
 					cout << key << " ";
 
 					vector<pii>::reverse_iterator ritr;
@@ -292,9 +293,9 @@ public:
 							visited[ritr->first] = true;
 						}
 					}
-				}// end while
-			}// end if
-		}//end for
+				} // end while
+			}	  // end if
+		}		  //end for
 		cout << "\n";
 	}
 
@@ -312,11 +313,12 @@ public:
 
 			cout << "Top Sort Ordering: ";
 			while (q.empty() != true) {
-				int v = q.front(); q.pop();
+				int v = q.front();
+				q.pop();
 				cout << v << " ";
 				counter++;
 
-				for (auto& val : Adj[v]) {
+				for (auto &val : Adj[v]) {
 					if (--indegree[val.first] == 0) {
 						q.push(val.first);
 					}
@@ -332,7 +334,7 @@ public:
 			cout << "Cannot perform a Topological Sort on a Undirected Graph\n";
 	}
 
-	int FindComponents() { //count the no.of connected componenets
+	int FindComponents() {										  //count the no.of connected componenets
 		vector<bool> visited(m_V + 1, false); //start with index 1
 		int count = 0;
 
@@ -352,267 +354,288 @@ public:
 	void UnweightedShortestPath(int start, int end) {
 		if (start <= 0 && start > m_V) {
 			cout << "Please check the start vertex\n";
+			return;
 		}
-		else if (end <= 0 && end > m_V) {
+		if (end <= 0 && end > m_V) {
 			cout << "Please check the end vertex\n";
+			return;
 		}
-		else {
-			cout << "Running Unweighted Shortest Path Algorithm......\n";
-			vector<int> distance(m_V + 1, INF); //starts with index 1
-			vector<int> path(m_V + 1, INF); //starts with index 1
-			queue<int> Q;
-			Q.push(start);
-			distance[start] = 0;
-			bool flag = false;
 
-			while (Q.empty() != true) {
-				int idx = Q.front(); Q.pop();
-				for (const auto& node : Adj[idx]) { //check the surrounding nodes
-					if (distance[node.first] == INF) { //if the node is not visited then visit and update the distance
-						distance[node.first] = distance[idx] + 1;
-						path[node.first] = idx;
-						Q.push(node.first);
+		// Main Logic
+		cout << "Running Unweighted Shortest Path Algorithm......\n";
+		vector<int> distance(m_V + 1, INF); //starts with index 1
+		vector<int> path(m_V + 1, INF);		//starts with index 1
+		queue<int> Q;
+		Q.push(start);
+		distance[start] = 0;
+		bool flag = false;
 
-						if (node.first == end) {
-							flag = true;
-							break;
-						}
+		while (Q.empty() != true) {
+			int idx = Q.front();
+			Q.pop();
+			for (const auto &node : Adj[idx]) { //check the surrounding nodes
+				if (distance[node.first] == INF) { //if the node is not visited then visit and update the distance
+					distance[node.first] = distance[idx] + 1;
+					path[node.first] = idx;
+					Q.push(node.first);
 
+					if (node.first == end) {
+						flag = true;
+						break;
 					}
 				}
-				if (flag == true)
-					break;
 			}
-
-			cout << "Minimum Distance :" << distance[end] << "\n";
-
-			PrintShortestPath(path, end);
+			if (flag == true)
+				break;
 		}
+
+		cout << "Minimum Distance :" << distance[end] << "\n";
+
+		PrintShortestPath(path, end);
+		
 	}
 
 	void LazyDijkstra(int start, int end) { //Standard Dijkstra Algorithm with PQ
 		if (start <= 0 && start > m_V) {
 			cout << "Please check the start vertex\n";
+			return;
 		}
-		else if (end <= 0 && end > m_V) {
+		if (end <= 0 && end > m_V) {
 			cout << "Please check the end vertex\n";
+			return;
 		}
-		else {
-			cout << "Running Lazy Dijsktra Shortest Path Algorithm......\n";
-			vector<int> distance(m_V + 1, INF); //starts with index 1
-			vector<int> path(m_V + 1, INF); //starts with index 1
 
-			distance[start] = 0;
+		// Main Logic
+		cout << "Running Lazy Dijsktra Shortest Path Algorithm...\n";
+		vector<int> distance(m_V + 1, INF); //starts with index 1
+		vector<int> path(m_V + 1, INF);		//starts with index 1
 
-			priority_queue<pii, vector<pii>, greater<pii>> pq; //minimim priority queue
+		distance[start] = 0;
 
-			pq.push({ distance[start], start }); // Entry[distance, vertex]
+		priority_queue<pii, vector<pii>, greater<pii>> pq; //minimim priority queue
 
-			int counter = 0, depthcnt = 0;
-			while (pq.empty() != true) {
-				auto node = pq.top(); pq.pop();
-				counter++;
-				for (const auto& w : Adj[node.second]) { // Scan all the neighbour vertices
-					int new_dist = distance[node.second] + w.second;
-					depthcnt++;
-					if (distance[w.first] == INF) {
-						distance[w.first] = new_dist;
-						pq.push({ new_dist, w.first });
-						path[w.first] = node.second;
-					}
+		pq.push({distance[start], start}); // Entry[distance, vertex]
 
-					if (distance[w.first] > new_dist) {
-						distance[w.first] = new_dist;
-						pq.push({ new_dist, w.first });
-						path[w.first] = node.second;
-					}
+		int counter = 0, depthcnt = 0;
+		while (pq.empty() != true) {
+			auto node = pq.top();
+			pq.pop();
+			counter++;
+			for (const auto &w : Adj[node.second]) { // Scan all the neighbour vertices
+				int new_dist = distance[node.second] + w.second;
+				depthcnt++;
+				if (distance[w.first] == INF) {
+					distance[w.first] = new_dist;
+					pq.push({new_dist, w.first});
+					path[w.first] = node.second;
+				}
+
+				if (distance[w.first] > new_dist) {
+					distance[w.first] = new_dist;
+					pq.push({new_dist, w.first});
+					path[w.first] = node.second;
 				}
 			}
-			cout << "Counter :" << counter << " Depth Count :" << depthcnt << ln;
-			//for (int i = 1; i <= m_V; i++) {
-			//	cout << distance[i] << " ";
-			//}
-			//cout << ln;
-			cout << "Minimum Distance :" << distance[end] << "\n";
+		}
+		cout << "Counter :" << counter << " Depth Count :" << depthcnt << ln;
+		//for (int i = 1; i <= m_V; i++) {
+		//	cout << distance[i] << " ";
+		//}
+		//cout << ln;
+		cout << "Minimum Distance :" << distance[end] << "\n";
 
-			PrintShortestPath(path, end);
-
-		}//end else
+		PrintShortestPath(path, end);
 	}
 
 	void EagerDijkstra(int start, int end) { //Optimzed Dijkstra Algorithm with Multiset
 		if (start <= 0 && start > m_V) {
 			cout << "Please check the start vertex\n";
+			return;
 		}
-		else if (end <= 0 && end > m_V) {
+		if (end <= 0 && end > m_V) {
 			cout << "Please check the end vertex\n";
+			return;
 		}
-		else {
-			cout << "Running Eager Dijsktra Shortest Path Algorithm......\n";
-			vector<int> distance(m_V + 1, INF); //starts with index 1
-			vector<int> path(m_V + 1, INF); //starts with index 1
 
-			distance[start] = 0;
+		// Main Logic
+		cout << "Running Eager Dijsktra Shortest Path Algorithm......\n";
+		vector<int> distance(m_V + 1, INF); //starts with index 1
+		vector<int> path(m_V + 1, INF);		//starts with index 1
 
-			multiset<pii> ms; //multiset data structure
+		distance[start] = 0;
 
-			ms.insert({ distance[start], start }); // Entry[distance, vertex]
-			int counter = 0, depthcnt = 0;
-			while (!ms.empty()) {
-				auto node = *ms.begin();
-				ms.erase(ms.begin());
-				counter++;
-				for (const auto& w : Adj[node.second]) { // Scan all the neighbour vertices
-					int new_dist = distance[node.second] + w.second;
-					depthcnt++;
-					if (distance[w.first] == INF) {
-						distance[w.first] = new_dist;
-						ms.insert({ new_dist, w.first });
-						path[w.first] = node.second;
-					}
+		multiset<pii> ms; //multiset data structure
 
-					if (distance[w.first] > new_dist) {
-						distance[w.first] = new_dist;
-						for (auto &it : ms) {
-							if (it.second == w.first) {
-								ms.erase(it);
-								break;
-							}
+		ms.insert({distance[start], start}); // Entry[distance, vertex]
+		int counter = 0, depthcnt = 0;
+		while (!ms.empty()) {
+			auto node = *ms.begin();
+			ms.erase(ms.begin());
+			counter++;
+			for (const auto &w : Adj[node.second]) { // Scan all the neighbour vertices
+				int new_dist = distance[node.second] + w.second;
+				depthcnt++;
+				if (distance[w.first] == INF) {
+					distance[w.first] = new_dist;
+					ms.insert({new_dist, w.first});
+					path[w.first] = node.second;
+				}
+
+				if (distance[w.first] > new_dist) {
+					distance[w.first] = new_dist;
+					for (auto &it : ms) {
+						if (it.second == w.first) {
+							ms.erase(it);
+							break;
 						}
-
-						ms.insert({ new_dist, w.first });
-						path[w.first] = node.second;
 					}
+
+					ms.insert({new_dist, w.first});
+					path[w.first] = node.second;
 				}
 			}
-			cout << "Counter :" << counter << " Depth Count :" << depthcnt << ln;
-			//for (int i = 1; i <= m_V; i++) {
-			//	cout << distance[i] << " ";
-			//}
-			//cout << ln;
-			cout << "Minimum Distance :" << distance[end] << "\n";
+		}
+		cout << "Counter :" << counter << " Depth Count :" << depthcnt << ln;
+		//for (int i = 1; i <= m_V; i++) {
+		//	cout << distance[i] << " ";
+		//}
+		//cout << ln;
+		cout << "Minimum Distance :" << distance[end] << "\n";
 
-			PrintShortestPath(path, end);
+		PrintShortestPath(path, end);
 
-		}//end else
 	}
 
 	void BellmanFordShortestPath(int start, int end) { //Weighted shortest path with negative edges //avg:On2 worst:On3
 		if (start <= 0 && start > m_V) {
 			cout << "Please check the start vertex\n";
+			return;
 		}
-		else if (end <= 0 && end > m_V) {
+		if (end <= 0 && end > m_V) {
 			cout << "Please check the end vertex\n";
+			return;
 		}
-		else { //INF 1E9 + 7 1000'000'007
-			cout << "Running Bellman Ford Shortest Path Algorithm......\n";
-			vector<int> distance(m_V + 1, INF); //starts with index 1
-			vector<int> path(m_V + 1, INF); //starts with index 1
 
-			distance[start] = 0;
+		// Main Logic
+		//INF 1E9 + 7 1000'000'007
+		cout << "Running Bellman Ford Shortest Path Algorithm......\n";
+		vector<int> distance(m_V + 1, INF); //starts with index 1
+		vector<int> path(m_V + 1, INF);		//starts with index 1
 
-			//Relaxation code to get rid of negative edge values
-			for (int cnt = 0; cnt < m_V - 1; cnt++) { // |V| - 1
-				for (int node = 1; node <= m_V; node++) { // scan all the vertices
-					for (const auto& v : Adj[node]) {
-						if (distance[node] + v.second < distance[v.first]) {
-							distance[v.first] = distance[node] + v.second;
-							path[v.first] = node;
-						}
-					}
-				}
-			}
+		distance[start] = 0;
 
-
-			//Check for the negative weight cycle
+		//Relaxation code to get rid of negative edge values
+		for (int cnt = 0; cnt < m_V - 1; cnt++) { // |V| - 1
 			for (int node = 1; node <= m_V; node++) { // scan all the vertices
-				for (const auto& v : Adj[node]) {
+				for (const auto &v : Adj[node]) {
 					if (distance[node] + v.second < distance[v.first]) {
-						distance[v.first] = -INF;
+						distance[v.first] = distance[node] + v.second;
+						path[v.first] = node;
 					}
 				}
 			}
-			//Printing the final distance values
-			cout << "Distance Values : ";
-			for (auto i = 1; i <= m_V; i++) {
-				cout << distance[i] << " ";
-			}
-			cout << ln;
-
-			cout << "Minimum Distance :" << distance[end] << "\n";
-
-			PrintShortestPath(path, end);
-
 		}
+
+		//Check for the negative weight cycle
+		for (int node = 1; node <= m_V; node++) { // scan all the vertices
+			for (const auto &v : Adj[node]) {
+				if (distance[node] + v.second < distance[v.first]) {
+					distance[v.first] = -INF;
+				}
+			}
+		}
+		//Printing the final distance values
+		cout << "Distance Values : ";
+		for (auto i = 1; i <= m_V; i++) {
+			cout << distance[i] << " ";
+		}
+		cout << ln;
+
+		cout << "Minimum Distance :" << distance[end] << "\n";
+
+		PrintShortestPath(path, end);
+
 	}
 
 	void PrimsMST(int start) {
 		if (start <= 0 && start > m_V) {
 			cout << "Please check the start vertex\n";
+			return;
 		}
-		else {
-			cout << "Running Prims Minimum Spanning Tree Algorithm......\n";
-			vector<int> distance(m_V + 1, INF); //starts with index 1
-			vector<int> path(m_V + 1, INF); //starts with index 1
 
-			distance[start] = 0;
+		cout << "Running Prims Minimum Spanning Tree Algorithm......\n";
+		vector<int> distance(m_V + 1, INF); //starts with index 1
+		vector<int> path(m_V + 1, INF);		//starts with index 1
 
-			
-			priority_queue<pii, vector<pii>, greater<pii>> pq; //Minimum priority queue 
-			
-			pq.push({ distance[start], start }); //Entry [distance, vertex] // sort by distance
+		distance[start] = 0;
 
+		multiset<pii> ms;
 
-			while (pq.empty() != true) {
-				auto node = pq.top(); pq.pop();
+		ms.insert({distance[start], start}); //Entry [distance, vertex] sort by distance
 
-				for (const auto& w : Adj[node.second]) { // get all the neighbour vertices
-					int new_dist = distance[node.second] + w.second;
+		while (ms.empty() != true) {
 
-					if (distance[w.first] == INF) {
-						distance[w.first] = w.second;
-						pq.push({ new_dist, w.first });
-						path[w.first] = node.second;
+			auto node = *ms.begin();
+			ms.erase(ms.begin());
+
+			cout << node.second << " " << node.first << ln;
+
+			for (const auto &w : Adj[node.second]) { // get all the neighbour vertices
+
+				if (distance[w.first] == INF) {
+					distance[w.first] = w.second;
+					ms.insert({w.second, w.first});
+					path[w.first] = node.second;
+				}
+
+				if (distance[w.first] > w.second) {
+					distance[w.first] = w.second;
+					for (auto &it : ms) {
+						if (it.second == w.first) {
+							ms.erase(it);
+							break;
+						}
 					}
-
-					if (distance[w.first] > new_dist) {
-						distance[w.first] = w.second;
-						pq.push({ new_dist, w.first });
-						path[w.first] = node.second;
-
-					}
+					ms.insert({w.second, w.first});
+					path[w.first] = node.second;
 				}
 			}
+		}
 
-			cout << "New MST Tree with Adjacency List Representation: " << ln;
-			//New Graph for MST
-			GraphList newG(m_V);
-			int totalCost = 0;
-			//Create a Tree Graph with new values
-			for (auto i = 1; i <= m_V; i++) {
-				if (path[i] == INF)
-					continue;
+		// for (auto &i : path)
+		// {
+		// 	cout << i << " ";
+		// }
+		// cout << ln;
+
+		cout << "New MST Tree with Adjacency List Representation: " << ln;
+		//New Graph for MST
+		GraphList newG(m_V);
+		int totalCost = 0;
+		//Create a Tree Graph with new values
+		for (auto i = 1; i <= m_V; i++) {
+			if (path[i] == INF)
+				continue;
+			else {
+				if (path[i] > i) {
+					newG.AddEdge(i, path[i], distance[i]);
+					totalCost += distance[i];
+				}
 				else {
-					if (path[i] > i) {
-						newG.AddEdge(i, path[i], distance[i]);
-						totalCost += distance[i];
-					}
-					else {
-						newG.AddEdge(path[i], i, distance[i]);
-						totalCost += distance[i];
-					}
+					newG.AddEdge(path[i], i, distance[i]);
+					totalCost += distance[i];
 				}
 			}
-
-			newG.PrintUnDiGraph();
-			cout << "TotalCost : " << totalCost << ln;
-
 		}
-	}
 
+		newG.PrintUnDiGraph();
+		cout << "TotalCost : " << totalCost << ln;
+		
+	}
 };
 
-int main() {
+int main()
+{
 	//cout << std::boolalpha;
 
 	//edge list graph with no weight values
@@ -669,7 +692,7 @@ int main() {
 		{17, 18}
 	};
 
-	//directed weightd graph Lazy Dijkstra Algo
+	//directed weighted graph Lazy Dijkstra Algo
 	vector<tiii> V3 = {
 		{1, 2, 4},
 		{1, 3, 1},
@@ -708,21 +731,19 @@ int main() {
 
 	//undirected weighted graph for MST
 	vector<tiii> V6 = {
-		{1, 3, 7},
-		{1, 4, 5},
-		{2, 3, 8},
-		{2, 5, 5},
-		{3, 4, 9},
-		{3, 5, 7},
-		{4, 5, 15},
-		{4, 7, 6},
-		{5, 6, 8},
-		{5, 7, 9},
-		{6, 7, 11}
+		{1, 2, 28},
+		{1, 6, 10},
+		{2, 3, 16},
+		{2, 7, 14},
+		{3, 4, 12},
+		{4, 5, 22},
+		{4, 7, 18},
+		{5, 6, 25},
+		{5, 7, 24}
 	};
 
 	//Eager Dijkstra directed weighted graph
-	vector<tiii> V7 = { // 6 vertices
+	vector<tiii> V7 = {// 6 vertices
 		{1, 2, 5},
 		{1, 3, 1},
 		{2, 3, 2},
@@ -737,7 +758,7 @@ int main() {
 		{6, 0, 0}
 	};
 
-	//Undirected weighted graph
+	//Undirected weighted graph William Fiset Example
 	vector<tiii> V8 = {
 		{1, 2, 10},
 		{1, 3, 1},
@@ -746,13 +767,26 @@ int main() {
 		{2, 5, 0},
 		{3, 4, 2},
 		{3, 6, 8},
-		{4, 6, 3},
+		{4, 6, 2},
 		{4, 7, 7},
 		{5, 6, 1},
 		{5, 8, 8},
 		{6, 7, 6},
 		{6, 8, 9},
 		{7, 8, 12}
+	};
+
+	//Undirected weighted graph AB Example
+	vector<tiii> V10 = {
+		{1, 2, 28},
+		{1, 6, 10},
+		{2, 3, 16},
+		{2, 7, 14},
+		{3, 4, 12},
+		{4, 5, 22},
+		{4, 7, 18},
+		{5, 6, 25},
+		{5, 7, 24}
 	};
 
 	//Directed weighted graph for FW algorithm
@@ -766,7 +800,6 @@ int main() {
 		{4, 1, 2}
 	};
 
-
 	//Working with Unweighted Shortest Path
 	//GraphList G(7);
 	//for (const auto& i : V0) {
@@ -775,22 +808,29 @@ int main() {
 	//G.PrintDiGraph();
 	//G.UnweightedShortestPath(3, 7);
 
-
-	// GraphList G(7);
-	// for (const auto& i : V5) {
-	// 	auto &[from, to, weight] = i;
-	// 	G.AddDiEdge(from, to, weight);
-	// }
-	// G.PrintDiGraph();
-	// G.BellmanFordShortestPath(1, 7);
-
-	FloydWarshall G(4);
-	for (const auto& i : V9) {
+	GraphList G(5);
+	for (const auto& i : V3) {
 		auto &[from, to, weight] = i;
 		G.AddDiEdge(from, to, weight);
 	}
-	G.PrintMatrix();
-	G.FloydWarshallSolver();
+	G.PrintDiGraph();
+	G.LazyDijkstra(1, 5);
+
+	// FloydWarshall G(4);
+	// for (const auto& i : V9) {
+	// 	auto &[from, to, weight] = i;
+	// 	G.AddDiEdge(from, to, weight);
+	// }
+	// G.PrintMatrix();
+	// G.FloydWarshallSolver();
+
+	// GraphList G(7);
+	// for (const auto &i : V10) {
+	// 	auto &[from, to, weight] = i;
+	// 	G.AddEdge(from, to, weight);
+	// }
+	// G.PrintUnDiGraph();
+	// G.PrimsMST(1);
 
 	return 0;
 }
