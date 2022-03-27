@@ -417,19 +417,19 @@ public:
 
 		pq.push({distance[start], start}); // Entry[distance, vertex]
 
-		int counter = 0, depthcnt = 0;
 		while (pq.empty() != true) {
 			auto node = pq.top();
 			pq.pop();
-			counter++;
+			visisted[node.second] = true;
+
+			if(distance[node.second] < node.first)
+				continue;
+
 			for (const auto &w : Adj[node.second]) { // Scan all the neighbour vertices
+				if(visisted[w.first] == true)
+					continue;
+
 				int new_dist = distance[node.second] + w.second;
-				depthcnt++;
-				if (distance[w.first] == INF) {
-					distance[w.first] = new_dist;
-					pq.push({new_dist, w.first});
-					path[w.first] = node.second;
-				}
 
 				if (distance[w.first] > new_dist) {
 					distance[w.first] = new_dist;
@@ -438,11 +438,7 @@ public:
 				}
 			}
 		}
-		cout << "Counter :" << counter << " Depth Count :" << depthcnt << ln;
-		//for (int i = 1; i <= m_V; i++) {
-		//	cout << distance[i] << " ";
-		//}
-		//cout << ln;
+		
 		cout << "Minimum Distance :" << distance[end] << "\n";
 
 		PrintShortestPath(path, end);
@@ -693,13 +689,13 @@ int main()
 		{17, 18}
 	};
 
-	//directed weighted graph Lazy Dijkstra Algo
+	//directed weighted graph Lazy Dijkstra Algorithm
 	vector<tiii> V3 = {
 		{1, 2, 4},
 		{1, 3, 1},
 		{2, 4, 1},
 		{3, 2, 2},
-		{3, 4, 3},
+		{3, 4, 5},
 		{4, 5, 3},
 		{5, 0, 0}
 	};
