@@ -1,7 +1,8 @@
-#include <algorithm>
 #include <iostream>
+#include <algorithm>
 #include <iterator>
 #include <vector>
+#include <ranges>
  
 void print(const auto& in1, const auto& in2, auto first, auto last) {
     std::cout << "{ ";
